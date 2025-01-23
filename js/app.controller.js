@@ -40,7 +40,7 @@ function renderLocs(locs) {
     var strHTML = locs.map(loc => {
         const className = (loc.id === selectedLocId) ? 'active' : ''
         var distance = ''
-        
+        //added by shoham
         if (gUserPos) {
             distance = utilService.getDistance(gUserPos, loc.geo) + 'km'
         }
