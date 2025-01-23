@@ -109,9 +109,9 @@ function getLocCountByUpdateMap() {
     return storageService.query(DB_KEY).then(locs => {
         const now = Date.now()
         const DAY = 1000 * 60 * 60 * 24
-
+        
         return locs.reduce((map, loc) => {
-            if (loc.createdAt === loc.updatedAt < DAY) map.never++
+            if (loc.createdAt === loc.updatedAt) map.never++ 
             else if (now - loc.updatedAt < DAY) map.today++
             else map.past++
             return map
