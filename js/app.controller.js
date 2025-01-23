@@ -2,6 +2,8 @@ import { utilService } from './services/util.service.js'
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
 
+var gUserPos 
+
 window.onload = onInit
 
 // To make things easier in this project structure 
@@ -37,6 +39,12 @@ function renderLocs(locs) {
 
     var strHTML = locs.map(loc => {
         const className = (loc.id === selectedLocId) ? 'active' : ''
+        var distance = ''
+        
+        if (gUserPos) {
+            distance = utilService.getDistance(gUserPos, loc.geo) + 'km'
+        }
+
         return `
         <li class="loc ${className}" data-id="${loc.id}">
             <h4>  
@@ -46,8 +54,8 @@ function renderLocs(locs) {
             <p class="muted">
                 Created: ${utilService.elapsedTime(loc.createdAt)}
                 ${(loc.createdAt !== loc.updatedAt) ?
-                ` | Updated: ${utilService.elapsedTime(loc.updatedAt)}`
-                : ''}
+                ` | Updated: ${utilService.elapsedTime(loc.updatedAt)}` : ''}
+                ${distance ? ` | Distance: ${distance}` : ''} 
             </p>
             <div class="loc-btns">     
                <button title="Delete" onclick="app.onRemoveLoc('${loc.id}')">🗑️</button>
@@ -125,10 +133,11 @@ function loadAndRenderLocs() {
             flashMsg('Cannot load locations')
         })
 }
-
+//Add gUserPos by shoham
 function onPanToUserPos() {
     mapService.getUserPosition()
         .then(latLng => {
+            gUserPos = latLng
             mapService.panTo({ ...latLng, zoom: 15 })
             unDisplayLoc()
             loadAndRenderLocs()
