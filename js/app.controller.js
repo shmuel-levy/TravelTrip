@@ -2,7 +2,7 @@ import { utilService } from './services/util.service.js'
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
 
-var gUserPos 
+var gUserPos
 
 window.onload = onInit
 
@@ -78,7 +78,7 @@ function renderLocs(locs) {
 
 function onRemoveLoc(locId) {
     // Shmuel added a confirm key here
-    if(!confirm('Are you sure you want to remove this place?')) return
+    if (!confirm('Are you sure you want to remove this place?')) return
     locService.remove(locId)
         .then(() => {
             flashMsg('Location removed')
@@ -190,6 +190,17 @@ function displayLoc(loc) {
     el.querySelector('.loc-address').innerText = loc.geo.address
     el.querySelector('.loc-rate').innerHTML = '★'.repeat(loc.rate)
     el.querySelector('[name=loc-copier]').value = window.location
+    
+    //added by shoham
+    if (gUserPos) {
+        const distance = utilService.getDistance(gUserPos, loc.geo, 'K')
+        el.querySelector('.loc-distance').innerText = `Distance from your position: ${distance.toFixed(2)} km`
+    } else {
+        el.querySelector('.loc-distance').innerText = 'Distance: Unknown (Enable "My Position")'
+    }
+
+
+
     el.classList.add('show')
 
     utilService.updateQueryParams({ locId: loc.id })
@@ -234,7 +245,7 @@ function getFilterByFromQueryParams() {
     const queryParams = new URLSearchParams(window.location.search)
     const txt = queryParams.get('txt') || ''
     const minRate = queryParams.get('minRate') || 0
-    locService.setFilterBy({txt, minRate})
+    locService.setFilterBy({ txt, minRate })
 
     document.querySelector('input[name="filter-by-txt"]').value = txt
     document.querySelector('input[name="filter-by-rate"]').value = minRate
@@ -273,10 +284,10 @@ function onSetFilterBy({ txt, minRate }) {
 function renderLocStats() {
     locService.getLocCountByRateMap()
         .then(stats => handleStats(stats, 'loc-stats-rate'))
-    
+
     locService.getLocCountByUpdateMap()
         .then(stats => handleStats(stats, 'loc-stats-update'))
-        // Added the extra chart for map
+    // Added the extra chart for map
 }
 
 function handleStats(stats, selector) {
