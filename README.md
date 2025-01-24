@@ -87,7 +87,7 @@ bashCopygit clone https://github.com/shmuel-levy/TravelTip.git
 
 Configure API key
 
-jsCopyconst MAPS_API_KEY = 'your-api-key-here'
+jsCopyconst MAPS_API_KEY = 'AIzaSyB24Kb_nIqmTGDIbnBb6XceKr_tz_N8nGs'
 
 Enable Google APIs
 
@@ -95,6 +95,3 @@ Maps JavaScript API
 Geocoding API
 
 
-Launch
-
-bashCopyopen index.html
