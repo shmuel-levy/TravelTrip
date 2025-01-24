@@ -1,4 +1,4 @@
-/* Media queries for responsive design */
+
 
 @media (max-width: 768px) {
     .locs-container {
@@ -45,17 +45,5 @@
       left: 10px;
       right: 10px;
       text-align: center;
-    }
-   }
-   
-   @media (min-width: 1024px) {
-    .locs-container {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 1em;
-    }
-   
-    .map {
-      height: 100vh;
     }
    }
