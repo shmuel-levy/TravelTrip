@@ -107,33 +107,28 @@ function onSearchAddress(ev) {
 }
 //Replace the prompt logic with dialog by shoham
 function onAddLoc(geo) {
-    showLocDialog('Add Location', { geo })
+    if (!geo) return;
+    const dialog = document.querySelector('#location-modal');
+    if (!dialog) return;
 
-    const dialog = document.querySelector('.loc-dialog')
-    dialog.addEventListener('close', () => {
-        if (dialog.returnValue === 'cancel') return
-    })
+    dialog.dataset.geo = JSON.stringify(geo);
+    dialog.showModal();
 
-    const name = dialog.querySelector('[name=loc-name]').value
-    const rate = +dialog.querySelector('[name=loc-rate]').value
-
-    if (!name || !rate) return
-
-    const loc = {
-        name,
-        rate,
-        geo: gDialogGeo
-    }
-    locService.save(loc)
-        .then((savedLoc) => {
-            flashMsg(`Added Location (id: ${savedLoc.id})`)
-            utilService.updateQueryParams({ locId: savedLoc.id })
-            loadAndRenderLocs()
-        })
-        .catch(err => {
-            console.error('OOPs:', err)
-            flashMsg('Cannot add location')
-        })
+    dialog.onclose = (ev) => {
+        if (dialog.returnValue === 'save') {
+            const formData = new FormData(dialog.querySelector('form'));
+            const loc = {
+                name: formData.get('name'),
+                rate: +formData.get('rate'),
+                geo: JSON.parse(dialog.dataset.geo)
+            };
+            locService.save(loc)
+                .then(() => {
+                    flashMsg('Location added successfully');
+                    loadAndRenderLocs();
+                });
+        }
+    };
 }
 
 function loadAndRenderLocs() {
@@ -161,34 +156,22 @@ function onPanToUserPos() {
 }
 //Replace the prompt logic with dialog by shoham
 function onUpdateLoc(locId) {
-    locService.getById(locId)
-        .then(loc => {
-            showLocDialog('Update Location', loc)
+    locService.getById(locId).then(loc => {
+        const dialog = document.querySelector('#location-modal')
+        dialog.querySelector('[name=name]').value = loc.name
+        dialog.querySelector('[name=rate]').value = loc.rate
+        dialog.showModal()
 
-            const dialog = document.querySelector('.loc-dialog')
-            dialog.addEventListener('close', () => {
-                if (dialog.returnValue === 'cancel') return
-            })
-
-            const name = dialog.querySelector('[name=loc-name]').value
-            const rate = +dialog.querySelector('[name=loc-rate]').value
-
-            if (name !== loc.name || rate !== loc.rate) {
-                loc.name = name
-                loc.rate = rate
-
+        dialog.onclose = (ev) => {
+            if (dialog.returnValue === 'save') {
+                const formData = new FormData(dialog.querySelector('form'))
+                loc.name = formData.get('name')
+                loc.rate = +formData.get('rate')
                 locService.save(loc)
-                    .then(savedLoc => {
-                        flashMsg(`Rate was set to: ${savedLoc.rate}`)
-                        loadAndRenderLocs()
-                    })
-                    .catch(err => {
-                        console.error('OOPs:', err)
-                        flashMsg('Cannot update location')
-                    })
-
+                    .then(loadAndRenderLocs)
             }
-        })
+        }
+    })
 }
 
 function onSelectLoc(locId) {

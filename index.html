@@ -102,15 +102,17 @@
     <div class="user-msg"></div>
 
     <!-- Add dialog by shoham -->
-    <dialog class="loc-dialog">
-      <form method="dialog" onsubmit="app.onSaveLocation(event)">
-        <h2 class="dialog-title"></h2>
-        <input type="text" name="loc-name" placeholder="Location Name" required />
-        <input type="number" name="loc-rate" placeholder="Rate (1-5)" min="1" max="5" required />
-        <button type="submit">Save</button>
-        <button type="button" onclick="app.closeDialog()">Cancel</button>
+    <dialog id="location-modal">
+      <form method="dialog">
+          <h2>Add/Edit Location</h2>
+          <input type="text" name="name" placeholder="Location name" required>
+          <input type="number" name="rate" min="1" max="5" value="1" required>
+          <div class="modal-buttons">
+              <button value="save">Save</button>
+              <button value="cancel" onclick="this.closest('dialog').close()">Cancel</button>
+          </div>
       </form>
-    </dialog>
+  </dialog>
 
     <script type="module" src="js/app.controller.js"></script>
   </body>
