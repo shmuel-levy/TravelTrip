@@ -1,0 +1,61 @@
+/* Media queries for responsive design */
+
+@media (max-width: 768px) {
+    .locs-container {
+      padding: 0.3em;
+    }
+   
+    .map {
+      height: 50vh;
+    }
+   
+    .loc-list li {
+      padding: 0.5em;
+    }
+   
+    .pie {
+      width: 80px;
+      height: 80px;
+    }
+   
+    .selected-loc.show {
+      max-height: 20em;
+    }
+   
+    .form-search {
+      text-align: center;
+    }
+   }
+   
+   @media (max-width: 480px) {
+    .loc-list h4 {
+      flex-direction: column;
+    }
+   
+    .loc-btns button {
+      padding: 0.3em;
+      margin: 0.1em;
+    }
+   
+    .loc-filter input[type=text] {
+      width: 95%;
+    }
+   
+    .user-msg {
+      left: 10px;
+      right: 10px;
+      text-align: center;
+    }
+   }
+   
+   @media (min-width: 1024px) {
+    .locs-container {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 1em;
+    }
+   
+    .map {
+      height: 100vh;
+    }
+   }
