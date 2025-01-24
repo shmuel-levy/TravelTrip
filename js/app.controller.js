@@ -3,6 +3,7 @@ import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
 
 var gUserPos
+var gDialogGeo = null
 
 window.onload = onInit
 
@@ -18,6 +19,7 @@ window.app = {
     onShareLoc,
     onSetSortBy,
     onSetFilterBy,
+    closeDialog,
 }
 
 function onInit() {
@@ -103,15 +105,24 @@ function onSearchAddress(ev) {
             flashMsg('Cannot lookup address')
         })
 }
-
+//Replace the prompt logic with dialog by shoham
 function onAddLoc(geo) {
-    const locName = prompt('Loc name', geo.address || 'Just a place')
-    if (!locName) return
+    showLocDialog('Add Location', { geo })
+
+    const dialog = document.querySelector('.loc-dialog')
+    dialog.addEventListener('close', () => {
+        if (dialog.returnValue === 'cancel') return
+    })
+
+    const name = dialog.querySelector('[name=loc-name]').value
+    const rate = +dialog.querySelector('[name=loc-rate]').value
+
+    if (!name || !rate) return
 
     const loc = {
-        name: locName,
-        rate: +prompt(`Rate (1-5)`, '3'),
-        geo
+        name,
+        rate,
+        geo: gDialogGeo
     }
     locService.save(loc)
         .then((savedLoc) => {
@@ -148,13 +159,24 @@ function onPanToUserPos() {
             flashMsg('Cannot get your position')
         })
 }
-
+//Replace the prompt logic with dialog by shoham
 function onUpdateLoc(locId) {
     locService.getById(locId)
         .then(loc => {
-            const rate = prompt('New rate?', loc.rate)
-            if (rate && rate !== loc.rate) {
+            showLocDialog('Update Location', loc)
+
+            const dialog = document.querySelector('.loc-dialog')
+            dialog.addEventListener('close', () => {
+                if (dialog.returnValue === 'cancel') return
+            })
+
+            const name = dialog.querySelector('[name=loc-name]').value
+            const rate = +dialog.querySelector('[name=loc-rate]').value
+
+            if (name !== loc.name || rate !== loc.rate) {
+                loc.name = name
                 loc.rate = rate
+
                 locService.save(loc)
                     .then(savedLoc => {
                         flashMsg(`Rate was set to: ${savedLoc.rate}`)
@@ -190,7 +212,7 @@ function displayLoc(loc) {
     el.querySelector('.loc-address').innerText = loc.geo.address
     el.querySelector('.loc-rate').innerHTML = '★'.repeat(loc.rate)
     el.querySelector('[name=loc-copier]').value = window.location
-    
+
     //added by shoham
     if (gUserPos) {
         const distance = utilService.getDistance(gUserPos, loc.geo, 'K')
@@ -338,4 +360,23 @@ function cleanStats(stats) {
         return acc
     }, [])
     return cleanedStats
+}
+
+//Add dialog functions by shoham
+function showLocDialog(title, loc = {}) {
+    const dialog = document.querySelector('.loc-dialog')
+    const form = dialog.querySelector('form')
+    dialog.querySelector('.dialog-title').innerText = title
+
+    form['loc-name'].value = loc.name || ''
+    form['loc-rate'].value = loc.rate || ''
+
+    if (loc.geo) gDialogGeo = loc.geo
+
+    dialog.showModal()
+}
+
+function closeDialog() {
+    const dialog = document.querySelector('.loc-dialog')
+    dialog.close()
 }
