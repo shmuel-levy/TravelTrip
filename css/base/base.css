@@ -11,6 +11,9 @@ header {
 }
 
 header h1 {
+    font-family: "Lilita One", serif;
+    font-weight: 400;
+    font-size: 3em;
     margin: 0;
 }
 
