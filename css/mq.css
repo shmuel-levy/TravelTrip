@@ -25,6 +25,7 @@
    
     .selected-loc.show {
       max-height: 20em;
+      width: 400px;
     }
    
     .form-search {

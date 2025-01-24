@@ -120,7 +120,7 @@ dialog#location-modal {
  }
  
  #location-modal button[value="save"] {
-    background: var(--color3);
+    background: #FBFADA;
     color: var(--bg1);
  }
  

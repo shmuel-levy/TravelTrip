@@ -1,4 +1,4 @@
-:root {
+/* :root {
     --bg1: #2c3e50;     
     --bg2: #3498db;    
     --bg3: #2980b9;     
@@ -7,7 +7,7 @@
     --color3: #f1c40f;   
     --color4: #f39c12;  
     --gray1: #bdc3c7;    
-}
+} */
 
 /* Another theme */
 /* :root {
@@ -20,3 +20,16 @@
     --color4: rgb(90, 66, 6);
     --gray1: lightgray;
 } */
+
+
+/* Shoham theme */
+:root {
+    --bg1: #436850;
+    --bg2: #12372A;
+    --bg3: #adbc9f7b;
+    --color1: aliceblue;
+    --color2: rgb(94, 169, 240);
+    --color3: #1A1A1D;
+    --color4: #1A1A1D;
+    --gray1: lightgray;
+}
